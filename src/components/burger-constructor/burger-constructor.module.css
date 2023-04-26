@@ -1,0 +1,14 @@
+.total {
+  display: flex;
+  float: right;
+  margin-top: 40px;
+  justify-content: center;
+  align-items: center;
+}
+
+.total svg {
+  width: 36px;
+  height: 36px;
+  margin-left: 8px;
+  margin-right: 40px;
+}
