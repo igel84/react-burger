@@ -9,7 +9,7 @@ function BurgerIngredients(props) {
   return (
     <section className="mr-10">
       <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
-      <div style={{ display: 'flex' }}>
+      <div className={burgerIngredients.tabs}>
         <Tab value="one" active={current === 'one'} onClick={setCurrent}>
           Булки
         </Tab>
@@ -20,19 +20,22 @@ function BurgerIngredients(props) {
           Начинки
         </Tab>
       </div>
-      <h2 className="text text_type_main-medium mt-10">Булки</h2>
-      <div className={burgerIngredients.list}>
-        {props.ingredients.map((ingredient) => {
-          return(
-            <Card key={ingredient._id} {...ingredient} />
-          )
-        })}
+      <div className={burgerIngredients.all}>
+        <h2 className="text text_type_main-medium mt-10">Булки</h2>
+        <div className={burgerIngredients.list}>
+          {props.ingredients.map((ingredient) => {
+            return(
+              <Card key={ingredient._id} {...ingredient} />
+            )
+          })}
+        </div>
       </div>
     </section>
   )
 }
 
 BurgerIngredients.propTypes = {
+  ingredients: PropTypes.array
 };
 
 export default BurgerIngredients;

@@ -1,7 +1,16 @@
+.tabs {
+  display: flex;
+}
+
+.all {
+  height: 600px;
+  overflow-y: scroll;
+}
+
 .list{
   display: flex;
   justify-content: stretch;
-  align-items: start;
+  align-items: flex-start;
   flex-wrap: wrap;
   width: 600px;
 }
