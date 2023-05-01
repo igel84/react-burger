@@ -1,0 +1,36 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 32px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: scroll;
+  margin-left: -32px;
+}
+
+.inputs > div {
+  display: flex;
+  /* flex-direction: row; */
+  align-items: center;
+}
+
+.total {
+  display: flex;
+  float: right;
+  margin-top: 40px;
+  justify-content: center;
+  align-items: center;
+}
+
+.total svg {
+  width: 36px;
+  height: 36px;
+  margin-left: 8px;
+  margin-right: 40px;
+}

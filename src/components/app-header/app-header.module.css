@@ -1,0 +1,39 @@
+.nav {
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+}
+
+.menu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+}
+
+.menuLeft {
+  composes: menu;
+}
+
+.menuRight {
+  composes: menu;
+}
+
+.menuLeft li {
+  float: left;
+}
+
+.menuRight li {
+  float: right;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+}
+
+.logo {
+  flex-grow: 1;
+}
