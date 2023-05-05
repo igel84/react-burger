@@ -15,7 +15,6 @@ function BurgerIngredients(props) {
   })
 
   const handleOpenModal = (e, ingredient) => {
-    console.log(ingredient)
     setModal({
       img: ingredient.image_large,
       name: ingredient.name,

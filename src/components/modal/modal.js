@@ -8,6 +8,22 @@ import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 const modalRoot = document.getElementById("react-modals");
   
 class Modal extends React.Component {
+  constructor(props){
+    super(props);
+    this.escFunction = this.escFunction.bind(this);
+  }
+  escFunction(event){
+    if (event.key === "Escape") {
+      this.props.onClose();
+    }
+  }
+  componentDidMount(){
+    document.addEventListener("keydown", this.escFunction, false);
+  }
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.escFunction, false);
+  }
+
   render() {
     const { children, header, onClose, onNothing } = this.props;
 

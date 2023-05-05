@@ -33,10 +33,10 @@ export default function IngredientDetails(props) {
 IngredientDetails.propTypes = {
   img: PropTypes.string,
   name: PropTypes.string,
-  calories: PropTypes.string,
-  proteins: PropTypes.string,
-  fat: PropTypes.string,
-  carbohydrates: PropTypes.string,
+  calories: PropTypes.number,
+  proteins: PropTypes.number,
+  fat: PropTypes.number,
+  carbohydrates: PropTypes.number,
   onClose: PropTypes.func,
   onNothing: PropTypes.func
 };

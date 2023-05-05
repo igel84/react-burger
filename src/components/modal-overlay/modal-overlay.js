@@ -11,6 +11,6 @@ export default function ModalOverlay(props) {
 }
 
 ModalOverlay.propTypes = {
-  children: PropTypes.array,
+  children: PropTypes.object,
   onBgClick: PropTypes.func
 };
