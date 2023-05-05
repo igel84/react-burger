@@ -1,13 +1,14 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import cardStyle from './card.module.css'
+import style from './card.module.css'
 
 function Card(props) {
   return (
-    <div className={cardStyle.card}>
+    <div className={style.card} onClick={props.onCardClick}>
       <img src={props.image} alt={props.name} className="ml-4 mr-4 mb-1" />
       <Counter count={1} size="default" extraClass="m-1 counter" />
-      <div className={cardStyle.price}>
+      <div className={style.price}>
         <span className="text text_type_digits-default mr-2">{props.price}</span>
         <CurrencyIcon />
       </div>
