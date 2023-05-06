@@ -2,26 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import burgerIngredients from './burger-ingredients.module.css'
 import Card from '../card/card'
+import Modal from '../modal/modal'
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 
 function BurgerIngredients(props) {
   const [current, setCurrent] = React.useState('one')
   const [modal, setModal] = React.useState({
-    name: null,
-    img: null,
-    calories: null,
+    ingredient: null,
     isVisible: false
   })
 
   const handleOpenModal = (e, ingredient) => {
     setModal({
-      img: ingredient.image_large,
-      name: ingredient.name,
-      calories: ingredient.calories,
-      proteins: ingredient.proteins,
-      fat: ingredient.fat,
-      carbohydrates: ingredient.carbohydrates,
+      ingredient: ingredient,
       isVisible: true
     })
   }
@@ -55,7 +49,7 @@ function BurgerIngredients(props) {
             return(
               <Card
                 key={ingredient._id}
-                {...ingredient}
+                ingredient={ingredient}
                 onCardClick={(e) => handleOpenModal(e, ingredient)}
               />
             )
@@ -63,11 +57,9 @@ function BurgerIngredients(props) {
         </div>
       </div>
       {modal.isVisible && 
-        <IngredientDetails
-          onNothing={handleNothingModal}
-          onClose={handleCloseModal}
-          {...modal}
-        />
+        <Modal header='Детали ингредиента' onNothing={handleNothingModal} onClose={handleCloseModal}>
+          <IngredientDetails ingredient={modal.ingredient} />
+        </Modal>
       }
     </section>
   )

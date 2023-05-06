@@ -18,6 +18,9 @@ export default function App() {
       setState({...state, isLoading: true});
       try {
         const res = await fetch(`${api}api/ingredients`);
+        if (!res.ok) {
+          throw new Error(`Ошибка ${res.status}`);
+        }
         const data = await res.json();
         setState({...state, ingredients: data.data, isLoading: false});
       } catch (err) {

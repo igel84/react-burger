@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import burgerConstructor from './burger-constructor.module.css'
 import OrderDetails from '../order-details/order-details'
+import Modal from '../modal/modal'
 import { ConstructorElement, CurrencyIcon, Button, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 
 function BurgerConstructor(props) {
@@ -68,11 +69,10 @@ function BurgerConstructor(props) {
           Оформить заказ
         </Button>
       </div>
-      {modal.isVisible && 
-        <OrderDetails
-          onNothing={handleNothingModal}
-          onClose={handleCloseModal}
-        />
+      {modal.isVisible &&
+        <Modal header='' onNothing={handleNothingModal} onClose={handleCloseModal}>
+          <OrderDetails />
+        </Modal>
       }
     </section>
   )

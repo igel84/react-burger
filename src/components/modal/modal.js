@@ -7,50 +7,46 @@ import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 
 const modalRoot = document.getElementById("react-modals");
   
-class Modal extends React.Component {
-  constructor(props){
-    super(props);
-    this.escFunction = this.escFunction.bind(this);
-  }
-  escFunction(event){
-    if (event.key === "Escape") {
-      this.props.onClose();
+export default function Modal(props) {
+
+  const { children, header, onClose, onNothing } = props;
+
+  React.useEffect(() => {
+    const escFunction = e => {
+      if (e.key === "Escape") {
+        onClose();
+      }
     }
-  }
-  componentDidMount(){
-    document.addEventListener("keydown", this.escFunction, false);
-  }
-  componentWillUnmount(){
-    document.removeEventListener("keydown", this.escFunction, false);
-  }
+  
+    document.addEventListener("keydown", escFunction, false);
 
-  render() {
-    const { children, header, onClose, onNothing } = this.props;
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-    return ReactDom.createPortal(
-      (
-        <ModalOverlay onBgClick={onClose}>
-          <div onClick={onNothing} className={style.modal}>
-            <div className={style.header}>
-              <span className="text text_type_main-large">{header}</span>
-              <CloseIcon type="primary" onClick={onClose} />
-            </div>
-            <div className={style.body}>
-              {children}
-            </div>
+  return ReactDom.createPortal(
+    (
+      <ModalOverlay onBgClick={onClose}>
+        <div onClick={onNothing} className={style.modal}>
+          <div className={style.header}>
+            <span className="text text_type_main-large">{header}</span>
+            <CloseIcon type="primary" onClick={onClose} />
           </div>
-        </ModalOverlay>
-      ),
-      modalRoot
-    );
-  }
+          <div className={style.body}>
+            {children}
+          </div>
+        </div>
+      </ModalOverlay>
+    ),
+    modalRoot
+  );
 }
 
 Modal.propTypes = {
-  children: PropTypes.array,
+  children: PropTypes.object,
   header: PropTypes.string,
   onClose: PropTypes.func,
   onNothing: PropTypes.func
 };
-
-export default Modal
