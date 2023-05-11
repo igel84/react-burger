@@ -1,0 +1,18 @@
+.ingredients {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
+  margin-bottom: 60px;
+}
+.ingredients > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.ingredients div span {
+  color: #8585AD;
+}

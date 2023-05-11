@@ -1,0 +1,37 @@
+.ingredients {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
+  margin-bottom: 60px;
+}
+.ingredients > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.ingredients div span {
+  color: #8585AD;
+}
+
+h3, h4, h5, h6 {
+  text-align: center;
+}
+
+h6 {
+  color: #8585AD;
+}
+
+.icon {
+  text-align: center;
+}
+
+.icon svg {
+  width: 120px;
+  height: 120px;
+  border: solid #4C4CFF 5px;
+  border-radius: 100%;
+}
