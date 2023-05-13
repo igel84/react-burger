@@ -1,14 +1,14 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import burgerConstructor from './burger-constructor.module.css'
 import OrderDetails from '../order-details/order-details'
-import { api } from '../../services/appConst'
+import { getOrder } from '../../utils/burger-api'
 import Modal from '../modal/modal'
 import { ConstructorElement, CurrencyIcon, Button, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import { ConstructorContext } from '../../services/appContext'
 
 function BurgerConstructor() {
-  const { ingredients } = React.useContext(ConstructorContext);
+  const { state } = React.useContext(ConstructorContext);
+  const ingredients = state.ingredients;
   
   const bun = React.useMemo(() => {
     return ingredients.find((ingr) => ingr.type === 'bun');
@@ -17,8 +17,8 @@ function BurgerConstructor() {
     return ingredients.filter((ingr) => ingr.type !== 'bun');
   }, [ingredients]);
 
-  const [summ, setSumm] = React.useState();
-  const [nums, setNums] = React.useState();
+  const [summ, setSumm] = React.useState(0);
+  const [nums, setNums] = React.useState([]);
 
   React.useEffect(() => {
     setSumm(stuff.reduce((s, val) => s + val.price, bun.price * 2));
@@ -31,26 +31,15 @@ function BurgerConstructor() {
   const [modal, setModal] = React.useState({orderNum: null, isVisible: false})
 
   const handleOpenModal = (e) => {
-    fetch(`${api}api/orders`, {
-      method: "POST", 
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({"ingredients": nums})
-    })
-    .then(function(res) {
-      if (res.status !== 200) {
-        setModal({...modal, error: `ERROR: ${res.status}`, isVisible: true})
-        return
-      }
-      res.json().then(function(data) {
-        setModal({...modal, orderNum: data.order.number, isVisible: true})
+    getOrder(nums)
+      .then(function(res){
+        console.log(res.data);
+        setModal({...modal, orderNum: res.order.number, isVisible: true})
       })
-    })
-    .catch(function(err) {
-      setModal({...modal, error: `ERROR: ${err.message}`, isVisible: true})
-    });
+      .catch(function (err) {
+        console.log(err);
+        setModal({...modal, error: 'Ошибка оформления заказа', isVisible: true})
+      })
   }
 
   const handleCloseModal = () => {
@@ -64,14 +53,14 @@ function BurgerConstructor() {
   return (
     <section className='mt-25'>
       <div className={burgerConstructor.list}>        
-        <ConstructorElement
+        {bun && <ConstructorElement
           key={`${bun._id}_topbun`}
           type={'top'}
           isLocked={true}
           text={`${bun.name} (верх)`}
           price={bun.price}
           thumbnail={bun.image}
-        />
+        />}
         <div className={burgerConstructor.inputs}>
           {stuff.map((ingredient) => {
             return(
@@ -86,14 +75,14 @@ function BurgerConstructor() {
             )
           })}
         </div>
-        <ConstructorElement
+        {bun && <ConstructorElement
           key={`${bun._id}_bottombun`}
           type={'bottom'}
           isLocked={true}
           text={`${bun.name} (низ)`}
           price={bun.price}
           thumbnail={bun.image}
-        />
+        />}
       </div>
       <div className={burgerConstructor.total}>
         <span className="text text_type_digits-medium">{summ}</span>
@@ -110,9 +99,5 @@ function BurgerConstructor() {
     </section>
   )
 }
-
-BurgerConstructor.propTypes = {
-  ingredients: PropTypes.array
-};
 
 export default BurgerConstructor;

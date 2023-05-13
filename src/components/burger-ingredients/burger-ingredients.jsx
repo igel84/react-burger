@@ -1,12 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import burgerIngredients from './burger-ingredients.module.css'
 import Card from '../card/card'
 import Modal from '../modal/modal'
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
+import { BurgerContext } from '../../services/appContext'
 
-function BurgerIngredients(props) {
+function BurgerIngredients() {
+  const { state } = React.useContext(BurgerContext);
   const [current, setCurrent] = React.useState('one')
   const [modal, setModal] = React.useState({
     ingredient: null,
@@ -45,7 +46,7 @@ function BurgerIngredients(props) {
       <div className={burgerIngredients.all}>
         <h2 className="text text_type_main-medium mt-10">Булки</h2>
         <div className={burgerIngredients.list}>
-          {props.ingredients.map((ingredient) => {
+          {state.ingredients.map((ingredient) => {
             return(
               <Card
                 key={ingredient._id}
@@ -64,9 +65,5 @@ function BurgerIngredients(props) {
     </section>
   )
 }
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.array
-};
 
 export default BurgerIngredients;

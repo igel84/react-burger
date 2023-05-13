@@ -23,6 +23,6 @@ export default function OrderDetails({orderNum, error}) {
 }
 
 OrderDetails.propTypes = {
-  orderNum: PropTypes.string,
+  orderNum: PropTypes.number,
   error: PropTypes.string,
 };
