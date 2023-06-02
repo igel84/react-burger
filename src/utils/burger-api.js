@@ -4,12 +4,12 @@ const checkReponse = (res) => {
   return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 };
 
-export function getIngredients() {
+export function getIngredientsRequest() {
   return fetch(`${NORMA_API}api/ingredients`)
     .then(checkReponse)
 }
 
-export function getOrder(items) {
+export function postOrderRequest(items) {
   return fetch(`${NORMA_API}api/orders`, {
       method: "POST", 
       headers: {

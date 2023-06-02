@@ -1,57 +1,71 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { useDrop } from "react-dnd";
 import burgerConstructor from './burger-constructor.module.css'
 import OrderDetails from '../order-details/order-details'
-import { getOrder } from '../../utils/burger-api'
+import Staff from '../staff/staff'
 import Modal from '../modal/modal'
-import { ConstructorElement, CurrencyIcon, Button, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import { ConstructorContext } from '../../services/appContext'
+import { ConstructorElement, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components'
+import { postOrder, CLOSE_ORDER, ADD_TO_ORDER } from '../../services/actions/order'
 
-function BurgerConstructor() {
-  const { state } = React.useContext(ConstructorContext);
-  const ingredients = state.ingredients;
-  
+function BurgerConstructor({onDropHandler}) {
+  const dispatch = useDispatch();
+  const { constructorIngredients, isOrderOpen, orderNum, orderFailed } = useSelector(store => ({
+    constructorIngredients: store.order.constructorIngredients,
+    isOrderOpen: store.order.isOrderOpen,
+    orderNum: store.order.orderNum,
+    orderFailed: store.order.orderFailed,
+  }));
+
   const bun = React.useMemo(() => {
-    return ingredients.find((ingr) => ingr.type === 'bun');
-  }, [ingredients]);
+    return constructorIngredients.find((ingr) => ingr.type === 'bun');
+  }, [constructorIngredients]);
   const stuff = React.useMemo(() => {
-    return ingredients.filter((ingr) => ingr.type !== 'bun');
-  }, [ingredients]);
+    return constructorIngredients.filter((ingr) => ingr.type !== 'bun');
+  }, [constructorIngredients]);
 
   const [summ, setSumm] = React.useState(0);
   const [nums, setNums] = React.useState([]);
 
+  const [, dropRef] = useDrop({
+    accept: "ingredients",
+    drop(itemId) {
+      handleDrop(itemId);
+    },
+  });
+
   React.useEffect(() => {
-    setSumm(stuff.reduce((s, val) => s + val.price, bun.price * 2));
-    let ids = [bun._id]
+    let ids = [];
+    if (bun) { 
+      setSumm(stuff.reduce((s, val) => s + val.price, bun.price * 2));
+      ids.push(bun._id);
+    }
     stuff.map((val) => ids.push(val._id))
     setNums(ids);
   // eslint-disable-next-line
-  }, [ingredients])
-
-  const [modal, setModal] = React.useState({orderNum: null, isVisible: false})
+  }, [constructorIngredients])
 
   const handleOpenModal = (e) => {
-    getOrder(nums)
-      .then(function(res){
-        console.log(res.data);
-        setModal({...modal, orderNum: res.order.number, isVisible: true})
-      })
-      .catch(function (err) {
-        console.log(err);
-        setModal({...modal, error: 'Ошибка оформления заказа', isVisible: true})
-      })
+    dispatch(postOrder(nums));
   }
 
   const handleCloseModal = () => {
-    setModal({...modal, isVisible: false})
+    dispatch({type: CLOSE_ORDER});
   }
 
   const handleNothingModal = (e) => {
     e.stopPropagation();
   }
 
+  const handleDrop = (itemId) => {
+    dispatch({
+      type: ADD_TO_ORDER,
+      item: itemId
+    });
+  };
+
   return (
-    <section className='mt-25'>
+    <section className='mt-25' ref={dropRef}>
       <div className={burgerConstructor.list}>        
         {bun && <ConstructorElement
           key={`${bun._id}_topbun`}
@@ -62,18 +76,7 @@ function BurgerConstructor() {
           thumbnail={bun.image}
         />}
         <div className={burgerConstructor.inputs}>
-          {stuff.map((ingredient) => {
-            return(
-              <div key={`${ingredient._id}_bun`}>
-                <DragIcon type="primary" />
-                <ConstructorElement
-                  text={ingredient.name}
-                  price={ingredient.price}
-                  thumbnail={ingredient.image}
-                />
-              </div>
-            )
-          })}
+          {stuff.map((ingredient) => <Staff key={ingredient.genId} {...ingredient} />)}
         </div>
         {bun && <ConstructorElement
           key={`${bun._id}_bottombun`}
@@ -91,9 +94,9 @@ function BurgerConstructor() {
           Оформить заказ
         </Button>
       </div>
-      {modal.isVisible &&
+      {isOrderOpen &&
         <Modal header='' onNothing={handleNothingModal} onClose={handleCloseModal}>
-          <OrderDetails orderNum={modal.orderNum} error={modal.error} />
+          <OrderDetails orderNum={orderNum} error={orderFailed && 'ошибка оформления заказа'} />
         </Modal>
       }
     </section>
