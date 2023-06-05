@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag, useDrop } from "react-dnd";
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import { REMOVE_FROM_ORDER, SET_CURRENT_DRAGGING, SET_DRAGGING_POSITION } from '../../services/actions/order'
+import { REMOVE_FROM_CONSTRUCTOR } from '../../services/actions/burgerConstructor'
+import { SET_CURRENT_DRAGGING, SET_DRAGGING_POSITION } from '../../services/actions/burgerConstructor'
 
-function Staff({genId, image, name, price}) {
+function Staff(props) {
   
+  const { genId, image, name, price } = props.ingredient
+
   const dispatch = useDispatch();
-  const { currentDragging } = useSelector(store => ({
-    currentDragging: store.order.currentDragging
-  }));
+  const currentDragging = useSelector(store => store.burgerConstructor.currentDragging)
 
   const [{isDrag}, dragRef] = useDrag({
     type: "staff",
@@ -28,7 +29,7 @@ function Staff({genId, image, name, price}) {
 
   const handleClose = (e, genId) => {
     dispatch({
-      type: REMOVE_FROM_ORDER,
+      type: REMOVE_FROM_CONSTRUCTOR,
       item: genId
     })
   }
@@ -79,7 +80,12 @@ function Staff({genId, image, name, price}) {
 }
 
 Staff.propTypes = {
-  ingredient: PropTypes.object
+  ingredient: PropTypes.shape({
+    genId: PropTypes.string,
+    image: PropTypes.string,
+    name: PropTypes.string,
+    price: PropTypes.number
+  })
 };
 
 export default Staff

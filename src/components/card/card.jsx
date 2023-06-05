@@ -16,9 +16,7 @@ export default function Card(props) {
     })
   });
 
-  const { constructorIngredients } = useSelector(store => ({
-    constructorIngredients: store.order.constructorIngredients
-  }));
+  const constructorIngredients = useSelector(store => store.burgerConstructor.constructorIngredients)
 
   const count = React.useMemo(() => {
     const ingrLen = constructorIngredients.filter(item => item._id === _id).length

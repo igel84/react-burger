@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { getIngredients } from '../../services/actions/order'
+import { getIngredients } from '../../services/actions/ingredients'
 
 import AppHeader from '../app-header/app-header'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
@@ -12,11 +12,9 @@ import style from './app.module.css'
 export default function App() {
   const dispatch = useDispatch();
 
-  const { ingredients, ingredientsRequest, ingredientsFailed } = useSelector(store => ({
-    ingredients: store.order.ingredients,
-    ingredientsRequest: store.order.ingredientsRequest,
-    ingredientsFailed: store.order.ingredientsFailed
-  }));
+  const ingredients = useSelector(store => store.ingredients.ingredients)
+  const ingredientsRequest = useSelector(store => store.ingredients.ingredientsRequest)
+  const ingredientsFailed = useSelector(store => store.ingredients.ingredientsFailed)
 
   React.useEffect(
     () => {
