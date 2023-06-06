@@ -2,12 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import style from './order-details.module.css'
 import doneImage from '../../images/done.png'
-import { ConstructorContext } from '../../services/appContext'
 
 export default function OrderDetails({orderNum, error}) {
-  // eslint-disable-next-line 
-  const { ingredients } = React.useContext(ConstructorContext);
-  
   return (
     <>
       {orderNum !== null ? (<>

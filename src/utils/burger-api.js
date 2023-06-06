@@ -1,15 +1,15 @@
 const NORMA_API = 'https://norma.nomoreparties.space/';
 
-const checkReponse = (res) => {
+const checkResponse = (res) => {
   return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 };
 
-export function getIngredients() {
+export function getIngredientsRequest() {
   return fetch(`${NORMA_API}api/ingredients`)
-    .then(checkReponse)
+    .then(checkResponse)
 }
 
-export function getOrder(items) {
+export function postOrderRequest(items) {
   return fetch(`${NORMA_API}api/orders`, {
       method: "POST", 
       headers: {
@@ -18,5 +18,5 @@ export function getOrder(items) {
       },
       body: JSON.stringify({"ingredients": items})
     })
-    .then(checkReponse)
+    .then(checkResponse)
 }

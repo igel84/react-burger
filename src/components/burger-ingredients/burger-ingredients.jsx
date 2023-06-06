@@ -1,65 +1,101 @@
-import React from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 import burgerIngredients from './burger-ingredients.module.css'
-import Card from '../card/card'
+import CardList from '../card-list/card-list'
 import Modal from '../modal/modal'
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
-import { BurgerContext } from '../../services/appContext'
+import { CLOSE_INGREDIENT } from '../../services/actions/ingredientDetailsModal';
 
 function BurgerIngredients() {
-  const { state } = React.useContext(BurgerContext);
-  const [current, setCurrent] = React.useState('one')
-  const [modal, setModal] = React.useState({
-    ingredient: null,
-    isVisible: false
-  })
+  const refBuns = useRef()
+  const refMain = useRef()
+  const refSauc = useRef()
 
-  const handleOpenModal = (e, ingredient) => {
-    setModal({
-      ingredient: ingredient,
-      isVisible: true
-    })
-  }
+  const dispatch = useDispatch();
 
+  const ingredients = useSelector(store => store.ingredients.ingredients)
+  const currentIngredient = useSelector(store => store.ingredientDetailsModal.currentIngredient)
+  const isIngredientOpen = useSelector(store => store.ingredientDetailsModal.isIngredientOpen)
+
+  const { buns, mains, sauces } = useMemo(() => {
+    return {
+      buns: ingredients.filter(item => item.type === 'bun'),
+      mains: ingredients.filter(item => item.type === 'main'),
+      sauces: ingredients.filter(item => item.type === 'sauce')
+    }
+  }, [ingredients])
+
+  const [current, setCurrent] = useState('one')
+  
   const handleCloseModal = () => {
-    setModal({...modal, isVisible: false})
+    dispatch({ type: CLOSE_INGREDIENT })
   }
 
   const handleNothingModal = (e) => {
     e.stopPropagation();
   }
 
+  const [isBunsInter, setBunsIsInter] = useState(false);
+  const [isMainInter, setMainIsInter] = useState(false);
+  const [isSaucInter, setSaucIsInter] = useState(false);
+
+  const interChange = (entry, val) => {
+    if (val === 'one') {
+      setBunsIsInter(entry.isIntersecting);
+    } else if (val === 'two') {
+      setMainIsInter(entry.isIntersecting);
+    } else if (val === 'three') {
+      setSaucIsInter(entry.isIntersecting);
+    }
+  
+    if (isBunsInter) {
+      setCurrent('one');
+    } else if (isSaucInter) {
+      setCurrent('three');
+    } else if (isMainInter) {
+      setCurrent('two');
+    }
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {interChange(entry, 'one')});
+    observer.observe(refBuns.current);
+    return () => observer.disconnect();
+    // eslint-disable-next-line
+  }, [isBunsInter]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {interChange(entry, 'two')});
+    observer.observe(refMain.current);
+    return () => observer.disconnect();
+    // eslint-disable-next-line
+  }, [isMainInter]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {interChange(entry, 'three')});
+    observer.observe(refSauc.current);
+    return () => observer.disconnect();
+    // eslint-disable-next-line
+  }, [isSaucInter]);
+
   return (
     <section className="mr-10">
       <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
       <div className={burgerIngredients.tabs}>
-        <Tab value="one" active={current === 'one'} onClick={setCurrent}>
-          Булки
-        </Tab>
-        <Tab value="two" active={current === 'two'} onClick={setCurrent}>
-          Соусы
-        </Tab>
-        <Tab value="three" active={current === 'three'} onClick={setCurrent}>
-          Начинки
-        </Tab>
+        <Tab value="one" active={current === 'one'} onClick={setCurrent}>Булки</Tab>
+        <Tab value="two" active={current === 'two'} onClick={setCurrent}>Начинки</Tab>
+        <Tab value="three" active={current === 'three'} onClick={setCurrent}>Соусы</Tab>        
       </div>
-      <div className={burgerIngredients.all}>
-        <h2 className="text text_type_main-medium mt-10">Булки</h2>
-        <div className={burgerIngredients.list}>
-          {state.ingredients.map((ingredient) => {
-            return(
-              <Card
-                key={ingredient._id}
-                ingredient={ingredient}
-                onCardClick={(e) => handleOpenModal(e, ingredient)}
-              />
-            )
-          })}
+        <div className={burgerIngredients.all}>
+        {/* <div className={burgerIngredients.all}> */}
+          <CardList ingredients={buns}   name="Булки"   title="bun"   refTarget={refBuns} />
+          <CardList ingredients={mains}  name="Начинки" title="main"  refTarget={refMain} />
+          <CardList ingredients={sauces} name="Соусы"   title="sauce" refTarget={refSauc} />
         </div>
-      </div>
-      {modal.isVisible && 
+      {isIngredientOpen && 
         <Modal header='Детали ингредиента' onNothing={handleNothingModal} onClose={handleCloseModal}>
-          <IngredientDetails ingredient={modal.ingredient} />
+          <IngredientDetails ingredient={currentIngredient} />
         </Modal>
       }
     </section>
